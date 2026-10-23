@@ -1,0 +1,31 @@
+---
+title: "Hackathon"
+author: "The Missing Third"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+hackathon_data <- read.csv("C:/Users/fearo/OneDrive/Documents/GitHub/nyc_access_clean.csv")
+library(stargazer)
+```
+
+```{r reg, include=FALSE}
+regression <- lm(log_access ~ population + poverty_pct + youth_pct + older_pct + log_density + log_income, data = hackathon_data)
+```
+
+```{r our table, include=FALSE}
+summary(regression)
+```
+
+```{r stargazer table, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
+cat('<div style="display: flex; justify-content: center;">')
+stargazer(regression, 
+          type = "html",                  
+          title = "Regression Results: Access",
+          dep.var.labels = "Logged Access",
+          covariate.labels = c("Population", "Poverty Percentage", "Youth Percentage", "Older Percentage", "Log of Density", "Log of Income"),
+          align = TRUE,                   # Align coefficients vertically
+          no.space = TRUE)                # Removes empty lines to make it compact
+```
+
