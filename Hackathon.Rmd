@@ -6,26 +6,32 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-hackathon_data <- read.csv("C:/Users/fearo/OneDrive/Documents/GitHub/nyc_access_clean.csv")
+hackathon_data <- read.csv("C:/Users/fearo/OneDrive/Documents/GitHub/Hackathon Fall 2026/nyc_access_clean.csv")
 library(stargazer)
 ```
 
 ```{r reg, include=FALSE}
-regression <- lm(log_access ~ population + poverty_pct + youth_pct + older_pct + log_density + log_income, data = hackathon_data)
+regression1 <- lm(log_access ~ log_income, data = hackathon_data)
+regression2 <- lm(log_access ~ log_income + log_density, data = hackathon_data)
+regression3 <- lm(log_access ~ log_income + log_density + poverty_pct + youth_pct + older_pct + population, data = hackathon_data)
+regression4 <- lm(log_access ~ log_income + log_density + poverty_pct + youth_pct + older_pct + population + log_income * log_density, data = hackathon_data)
 ```
 
 ```{r our table, include=FALSE}
-summary(regression)
+summary(regression1)
+summary(regression2)
+summary(regression3)
+summary(regression4)
 ```
 
 ```{r stargazer table, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
 cat('<div style="display: flex; justify-content: center;">')
-stargazer(regression, 
-          type = "html",                  
-          title = "Regression Results: Access",
-          dep.var.labels = "Logged Access",
-          covariate.labels = c("Population", "Poverty Percentage", "Youth Percentage", "Older Percentage", "Log of Density", "Log of Income"),
-          align = TRUE,                   # Align coefficients vertically
-          no.space = TRUE)                # Removes empty lines to make it compact
+stargazer(regression1, regression2, regression3, regression4,
+          type = "html",
+          title = "Regression Results",
+          dep.var.labels = "Log of Access",
+          covariate.labels = c("Log of Income", "Log of Density", "Poverty Percentage", "Youth Percentage", "Older Percentage", "Population", "Income/Density Interaction"),
+          keep.stat = c("n", "rsq", "adj.rsq"),
+          star.cutoffs = c(0.1, 0.05, 0.01))
 ```
 
